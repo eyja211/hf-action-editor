@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>HF 动作编辑器 — Hero Fighter 角色动作/贴图编辑工具</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div id="topbar">
+    <span class="title">HF 动作编辑器</span>
+    <button id="btn-open">📂 打开角色</button>
+    <button id="btn-save" title="写回打开的文件夹 (Ctrl+S)">💾 保存</button>
+    <button id="btn-export" title="导出 HFWorkshop 可导入的 zip">📦 导出 zip</button>
+    <button id="btn-undo" title="撤销 (Ctrl+Z)">↩ 撤销</button>
+    <button id="btn-redo" title="重做 (Ctrl+Y)">↪ 重做</button>
+    <span class="spacer"></span>
+    <span id="version-badge" style="display:none"></span>
+    <button id="btn-check" title="校验解析-序列化是否与原文件逐字节一致">🩺 兼容性体检</button>
+</div>
+
+<div id="main">
+    <!-- 左：动作列表 -->
+    <div id="left-pane">
+        <div class="pane-head">
+            <input id="action-search" type="text" placeholder="搜索动作…">
+            <button id="btn-action-copy" title="把当前动作整段复制为新动作">复制动作</button>
+        </div>
+        <ul id="action-list"></ul>
+    </div>
+
+    <!-- 中：画布 + 时间轴 -->
+    <div id="center-pane">
+        <div id="viewport">
+            <canvas id="stage"></canvas>
+            <div id="vp-toolbar">
+                <button id="tool-select" title="仅选择">☝ 选择</button>
+                <button id="tool-rotate" title="拖拽=绕挂接点旋转（Shift=15°吸附）">⟳ 旋转</button>
+                <button id="tool-move" title="拖拽=调整位移 dp（拖根部位=整体移动）">✥ 移动</button>
+                <button id="tool-scale" title="拖拽=缩放（Shift=仅纵向）">⤢ 缩放</button>
+                <span style="width:8px"></span>
+                <button id="toggle-fk" title="骨骼联动：开=编辑部位带动子部位（FK）；关=只动自己，子部位留在原地">联动</button>
+                <button id="toggle-onion" title="半透明显示前后帧">洋葱皮</button>
+                <button id="toggle-skel" title="显示骨骼连线与关节点">骨骼</button>
+                <button id="toggle-boxes" title="显示攻击框/受击框">判定框</button>
+                <button id="toggle-smooth" title="贴图平滑（HFEX 游戏内默认关闭）">平滑</button>
+                <button id="btn-fit" title="视图复位">⊡ 复位</button>
+            </div>
+        </div>
+        <div id="timeline">
+            <div id="transport">
+                <button id="btn-play">▶ 播放</button>
+                <label>速度
+                    <select id="play-speed">
+                        <option value="0.25">0.25×</option>
+                        <option value="0.5">0.5×</option>
+                        <option value="1" selected>1×</option>
+                    </select>
+                </label>
+                <button id="btn-frame-copy" title="复制当前帧并插到其后">＋复制帧</button>
+                <button id="btn-frame-del" title="删除当前帧">－删除帧</button>
+                <span class="hint">空格=播放/暂停 ·  ←→=切帧 · 30 tick/秒，每帧停 duration+1 tick</span>
+            </div>
+            <div id="frame-strip"></div>
+        </div>
+    </div>
+
+    <!-- 右：属性页 -->
+    <div id="right-pane">
+        <div id="tab-bar">
+            <button data-tab="tab-limb" class="on">部位</button>
+            <button data-tab="tab-frame">帧</button>
+            <button data-tab="tab-box">判定框</button>
+            <button data-tab="tab-action">动作</button>
+            <button data-tab="tab-tex">贴图</button>
+        </div>
+        <div id="tab-limb" class="tab-page on">
+            <div class="row-label">绘制顺序（上=顶层）</div>
+            <ul id="limb-list"></ul>
+            <div id="limb-props"></div>
+        </div>
+        <div id="tab-frame" class="tab-page">
+            <div class="row-label">
+                footY 自动重算
+                <button id="toggle-autofoot" title="姿势编辑后自动按游戏公式重算 footY">自动</button>
+                <button id="btn-footy-auto" title="立即按游戏公式重算一次">重算</button>
+            </div>
+            <div id="frame-props"></div>
+        </div>
+        <div id="tab-box" class="tab-page">
+            <div id="box-props"></div>
+        </div>
+        <div id="tab-action" class="tab-page">
+            <div id="action-props"></div>
+        </div>
+        <div id="tab-tex" class="tab-page">
+            <div id="texture-panel"></div>
+        </div>
+    </div>
+</div>
+
+<div id="busy">正在处理…</div>
+<div id="toast"></div>
+
+<script>
+// 标签页切换
+document.addEventListener('DOMContentLoaded', function () {
+    var bar = document.getElementById('tab-bar');
+    bar.querySelectorAll('button').forEach(function (btn) {
+        btn.onclick = function () {
+            bar.querySelectorAll('button').forEach(function (b) { b.classList.remove('on'); });
+            document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.remove('on'); });
+            btn.classList.add('on');
+            document.getElementById(btn.dataset.tab).classList.add('on');
+        };
+    });
+});
+</script>
+<script src="js/jsonio.js"></script>
+<script src="js/model.js"></script>
+<script src="js/as3math.js"></script>
+<script src="js/skeleton.js"></script>
+<script src="js/pose.js"></script>
+<script src="js/framestore.js"></script>
+<script src="js/images.js"></script>
+<script src="js/render.js"></script>
+<script src="js/rebake.js"></script>
+<script src="js/undo.js"></script>
+<script src="js/fsio.js"></script>
+<script src="js/zip.js"></script>
+<script src="js/ui/actions.js"></script>
+<script src="js/ui/timeline.js"></script>
+<script src="js/ui/viewport.js"></script>
+<script src="js/ui/limbs.js"></script>
+<script src="js/ui/frameprops.js"></script>
+<script src="js/ui/actionprops.js"></script>
+<script src="js/ui/boxes.js"></script>
+<script src="js/ui/textures.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

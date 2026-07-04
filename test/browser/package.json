@@ -1,0 +1,16 @@
+{
+  "name": "browser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node e2e.js",
+    "e2e": "node e2e.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer-core": "^25.3.0"
+  }
+}

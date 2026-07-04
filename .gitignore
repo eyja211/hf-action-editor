@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Browser E2E generated files
+test/browser/downloads/
+test/browser/shots/
+
+# Runtime / temporary files
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# Exported archives produced during manual tests
+*.zip
+
+# Local editor state
+.vscode/
+.idea/
+
+# Keep source and lockfiles tracked:
+# - test/browser/package.json
+# - test/browser/package-lock.json

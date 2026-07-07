@@ -1,4 +1,4 @@
-/** test/browser/server.js — 静态文件服务器（伺服 D:\desktop\贴图编辑 整个目录） */
+/** test/browser/server.js — 静态文件服务器（伺服测试工作区） */
 'use strict';
 const http = require('http');
 const fs = require('fs');

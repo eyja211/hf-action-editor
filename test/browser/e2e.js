@@ -11,7 +11,7 @@ const { execFileSync } = require('child_process');
 const puppeteer = require('puppeteer-core');
 const { start } = require('./server');
 
-const BASE = path.resolve(__dirname, '..', '..', '..');   // D:\desktop\贴图编辑
+const BASE = path.resolve(__dirname, '..', '..', '..');   // repo parent workspace
 const TOOL = 'HF动作编辑器';
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 const SHOTS = path.join(__dirname, 'shots');

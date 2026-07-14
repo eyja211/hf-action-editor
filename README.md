@@ -1,6 +1,6 @@
 # HF 动作编辑器
 
-[中文](README.md) | [日本語](README.ja.md)
+**中文** | [English](README.en.md) | [日本語](README.ja.md)
 
 Hero Fighter / HF-EX 本地浏览器动作与贴图编辑器。目标是替代手工修改 HFWorkshop 导出的 `Spt.json` / `Lmi` 数据：可视化编辑动作帧、贴图变体、判定框，并导出 HFWorkshop 可导入的 zip。
 

@@ -1,6 +1,6 @@
 # HF Action Editor
 
-[中文](README.md) | [日本語](README.ja.md)
+[中文](README.md) | [English](README.en.md) | **日本語**
 
 Hero Fighter / HF-EX 向けのローカルブラウザー型アクション・テクスチャ編集ツールです。HFWorkshop から出力した `Spt.json` / `Lmi` データを手作業で編集する代わりに、アクションフレーム、テクスチャバリエーション、当たり判定を視覚的に編集し、HFWorkshop に取り込める zip を出力できます。
 
